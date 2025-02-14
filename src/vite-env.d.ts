@@ -1,10 +1,9 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_ALGOLIA_APP_ID: string
-  readonly VITE_ALGOLIA_API_KEY: string
-  readonly VITE_ALGOLIA_INDEX_NAME: string
-  readonly VITE_BRAND_NAME: string
+  readonly VITE_PROJECT_NAME: string
+  readonly VITE_BRAND_WIDGET_URL: string
+  readonly VITE_PRODUCT_WIDGET_URL: string
 }
 
 interface ImportMeta {

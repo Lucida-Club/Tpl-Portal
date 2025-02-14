@@ -1,24 +1,23 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import ProductSearch from './components/ProductSearch';
-import CheckoutForm from './components/CheckoutForm';
-import OrderConfirmation from './components/OrderConfirmation';
-import OrderReview from './components/OrderReview';
-import ScrollToTop from './components/ScrollToTop';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import ProductWidget from './pages/ProductWidget';
+import BrandWidget from './pages/BrandWidget';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-grow">
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<ProductSearch />} />
-          <Route path="/checkout/:id" element={<CheckoutForm />} />
-          <Route path="/review" element={<OrderReview />} />
-          <Route path="/confirmation" element={<OrderConfirmation />} />
-        </Routes>
-      </main>
-    </div>
+    <Router>
+      <div className="min-h-screen bg-gray-100">
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Navigate to="/product-widget" replace />} />
+            <Route path="/product-widget" element={<ProductWidget />} />
+            <Route path="/brand-widget" element={<BrandWidget />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 
