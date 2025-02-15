@@ -15,16 +15,33 @@ function OrderReview() {
 
   const total = (product.price || 0) * quantity;
 
-  const handleConfirmOrder = () => {
+  const handleConfirmOrder = async () => {
     const orderId = Math.floor(100000 + Math.random() * 900000).toString();
-    navigate('/confirmation', {
-      state: {
-        product,
-        orderId,
-        quantity,
-        formData
+    const orderData = {
+      product,
+      orderId,
+      quantity,
+      formData
+    };
+
+    try {
+      const response = await fetch('https://hook.us2.make.com/gic0dkjfhdfv9iches953ts17ddouvxk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (response.ok) {
+        navigate('/confirmation', { state: { orderId } });
+      } else {
+        alert('Failed to submit order. Please try again.');
       }
-    });
+    } catch (error) {
+      console.error('Error submitting order:', error);
+      alert('An error occurred. Please try again.');
+    }
   };
 
   return (
