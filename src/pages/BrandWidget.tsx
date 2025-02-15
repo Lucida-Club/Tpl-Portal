@@ -23,15 +23,18 @@ const BrandWidget = () => {
             <h2 className="text-2xl font-bold">Brand Widget</h2>
           </div>
           <p className="text-gray-600 mb-4">
-            A powerful brand showcase widget that helps you present your brand identity across different platforms. Ideal for corporate websites, partner platforms, and marketing campaigns.
+            This is the brand widget. It provides access 
+            to all the products for the brand in a single 
+            UI that can be used via a iframe or stand alone
+            url.
           </p>
           <div className="bg-blue-50 p-4 rounded-lg">
             <h3 className="font-semibold text-blue-800 mb-2">Key Features</h3>
             <ul className="list-disc list-inside text-blue-700 space-y-1">
-              <li>Brand guidelines integration</li>
-              <li>Dynamic content updates</li>
-              <li>Responsive design</li>
-              <li>Cross-platform compatibility</li>
+              <li>Embeddable Code</li>
+              <li>Standalone URL</li>
+              <li>Dynamic Search</li>
+              <li>Full Checkout</li>
             </ul>
           </div>
         </div>

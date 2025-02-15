@@ -103,7 +103,10 @@ const ProductWidget = () => {
             <h2 className="text-2xl font-bold">Product Widget</h2>
           </div>
           <p className="text-gray-600 mb-4">
-            A customizable widget that showcases your products with rich interactive features. Perfect for embedding in e-commerce platforms, marketplaces, and product landing pages.
+            This is the product widget. It provides access 
+            to all the retail locations that sell that 
+            specific product, via either a url or iframe
+            code.
           </p>
 
           <div className="bg-blue-50 p-4 rounded-lg">
