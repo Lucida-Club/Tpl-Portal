@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:staging": "vite build && netlify deploy",
+    "deploy:production": "vite build && netlify deploy --prod"
   },
   "dependencies": {
     "@algolia/autocomplete-core": "^1.17.0",
