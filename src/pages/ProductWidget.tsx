@@ -19,7 +19,11 @@ const ProductWidget = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const baseUrl = import.meta.env.VITE_PRODUCT_WIDGET_URL?.replace(/\/+$/, '');
   const widgetUrl = `${baseUrl}?upc=${selectedProduct?.upc || ''}`;
-  const [autocompleteState, setAutocompleteState] = useState({});
+  const [autocompleteState, setAutocompleteState] = useState<any>({
+    collections: [],
+    isOpen: false
+  });
+  const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -38,8 +42,13 @@ const ProductWidget = () => {
         })
         .then((response) => {
           if (response.hits.length > 0) {
-            setSelectedProduct(response.hits[0] as Product);
+            const product = response.hits[0] as Product;
+            setSelectedProduct(product);
+            setInputValue(product.productName || product.name || '');
           }
+        })
+        .catch(error => {
+          console.error('Error fetching product:', error);
         });
     }
   }, []);
@@ -48,19 +57,64 @@ const ProductWidget = () => {
     () =>
       createAutocomplete({
         onStateChange({ state }) {
-          setAutocompleteState(state);
+          // Deduplicate the results by UPC before setting state
+          if (state.collections && state.collections.length > 0 && state.collections[0].items.length > 0) {
+            const items = state.collections[0].items as Product[];
+            
+            // Create a map to track unique UPCs
+            const uniqueUpcMap = new Map<string, Product>();
+            
+            // Keep only the first occurrence of each UPC
+            items.forEach(item => {
+              if (item.upc && !uniqueUpcMap.has(item.upc)) {
+                uniqueUpcMap.set(item.upc, item);
+              }
+            });
+            
+            // Convert map values back to array
+            const uniqueItems = Array.from(uniqueUpcMap.values());
+            
+            // Create a new state object with deduplicated items
+            const newState = {
+              ...state,
+              collections: [
+                {
+                  ...state.collections[0],
+                  items: uniqueItems
+                },
+                ...state.collections.slice(1)
+              ]
+            };
+            
+            setAutocompleteState(newState);
+          } else {
+            setAutocompleteState(state);
+          }
         },
         getSources() {
           return [
             {
               sourceId: 'products',
               getItems({ query }) {
+                if (!query || query.trim().length === 0) {
+                  return Promise.resolve([]);
+                }
+                
+                console.log('Searching for:', query);
+                
                 return searchClient
                   .initIndex(import.meta.env.VITE_ALGOLIA_INDEX_NAME)
                   .search(query, {
-                    hitsPerPage: 15
+                    hitsPerPage: 30 // Increased to ensure we get enough results after deduplication
                   })
-                  .then((response) => response.hits as Product[]);
+                  .then((response) => {
+                    console.log('Search response:', response);
+                    return response.hits as Product[];
+                  })
+                  .catch(error => {
+                    console.error('Algolia search error:', error);
+                    return [];
+                  });
               },
             },
           ];
@@ -73,12 +127,22 @@ const ProductWidget = () => {
     inputElement: inputRef.current,
   });
 
-  const { onFocus, onBlur, onChange } = autocomplete.getInputProps({
-    inputElement: inputRef.current,
-  });
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setInputValue(value);
+    
+    if (selectedProduct && value !== (selectedProduct.productName || selectedProduct.name)) {
+      // Clear selected product if user changes the input
+      setSelectedProduct(null);
+    }
+    
+    autocomplete.setQuery(value);
+    autocomplete.refresh();
+  };
 
   const handleProductSelect = (item: Product) => {
     setSelectedProduct(item);
+    setInputValue(item.productName || item.name || '');
     autocomplete.setIsOpen(false);
     // Save the selected UPC to localStorage
     localStorage.setItem(storageKey, item.upc);
@@ -96,8 +160,8 @@ const ProductWidget = () => {
 
   return (
     <div className="w-full h-[calc(100vh-64px)] p-4 space-y-4">
-      <div className="flex gap-4 max-w-6xl mx-auto">
-        <div className="w-[40%] bg-white p-6 rounded-lg shadow-lg">
+      <div className="flex flex-col lg:flex-row gap-4 max-w-6xl mx-auto">
+        <div className="w-full lg:w-[40%] bg-white p-6 rounded-lg shadow-lg">
           <div className="flex items-center gap-2 mb-4">
             <Package className="h-8 w-8 text-blue-500" />
             <h2 className="text-2xl font-bold">Product Widget</h2>
@@ -120,7 +184,7 @@ const ProductWidget = () => {
           </div>
         </div>
 
-        <div className="w-[60%] bg-white p-4 rounded-lg shadow-lg">
+        <div className="w-full lg:w-[60%] bg-white p-4 rounded-lg shadow-lg">
           <div className="flex items-center gap-2 mb-4">
             <Code2 className="h-5 w-5 text-gray-700" />
             <h2 className="text-lg font-semibold">Embed Code</h2>
@@ -133,7 +197,10 @@ const ProductWidget = () => {
             <div className="relative">
               <form 
                 ref={formRef}
-                onSubmit={onSubmit}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  onSubmit(e);
+                }}
                 onReset={onReset}
                 onKeyDown={onKeyDown}
                 className="relative"
@@ -142,27 +209,31 @@ const ProductWidget = () => {
                   <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                   <input
                     ref={inputRef}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    value={selectedProduct ? (selectedProduct.productName || selectedProduct.name) : ''}
+                    value={inputValue}
+                    onChange={handleInputChange}
+                    onFocus={() => {
+                      if (inputValue.trim()) {
+                        autocomplete.setIsOpen(true);
+                      }
+                    }}
                     placeholder="Search for a product..."
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                {autocompleteState.isOpen && (
+                {autocompleteState.isOpen && autocompleteState.collections?.[0]?.items?.length > 0 && (
                   <div
                     ref={panelRef}
-                    className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 py-1"
+                    className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 py-1 max-h-60 overflow-y-auto"
                   >
-                    {(autocompleteState as any).collections?.[0]?.items?.map((item: Product) => (
+                    {autocompleteState.collections[0].items.map((item: Product) => (
                       <button
                         key={item.objectID}
+                        type="button"
                         className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
                         onClick={() => handleProductSelect(item)}
                       >
-                        <div className="font-medium">{item.productName || item.name}</div>
-                        <div className="text-sm text-gray-500">UPC: {item.upc}</div>
+                        <div className="font-medium">{item.productName || item.name || 'Unknown Product'}</div>
+                        <div className="text-sm text-gray-500">UPC: {item.upc || 'N/A'}</div>
                       </button>
                     ))}
                   </div>
@@ -196,7 +267,7 @@ const ProductWidget = () => {
           <>
             <div className="text-sm text-gray-600 mb-2">
               Widget URL: {widgetUrl} 
-              &nbsp;<a href={widgetUrl} target="_blank"><b>(Open)</b></a>
+              &nbsp;<a href={widgetUrl} target="_blank" rel="noopener noreferrer"><b>(Open)</b></a>
             </div>
             <div className="w-full">
               <iframe

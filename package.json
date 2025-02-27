@@ -15,10 +15,12 @@
   "dependencies": {
     "@algolia/autocomplete-core": "^1.17.0",
     "@algolia/autocomplete-theme-classic": "^1.17.0",
+    "@reduxjs/toolkit": "^2.2.1",
     "algoliasearch": "^4.22.1",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-redux": "^9.1.0",
     "react-router-dom": "^6.22.3"
   },
   "devDependencies": {
