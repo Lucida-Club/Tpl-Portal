@@ -4,6 +4,6 @@
   status = 200
 
 [build]
-  command = "vite build"
+  command = "npm install && vite build"
   publish = "dist"
   functions = "netlify/functions"
