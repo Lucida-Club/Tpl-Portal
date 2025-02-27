@@ -60,7 +60,7 @@ const BrandWidget = () => {
 
       <div className="bg-white p-4 rounded-lg shadow-lg max-w-6xl mx-auto">
         <div className="text-sm text-gray-600 mb-2">
-          Widget URL: {widgetUrl}
+          Widget URL: {widgetUrl} &nbsp;<a href={widgetUrl} target="_blank"><b>(Open)</b></a>
         </div>
         <div className="w-full">
           <iframe

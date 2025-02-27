@@ -195,7 +195,8 @@ const ProductWidget = () => {
         {selectedProduct ? (
           <>
             <div className="text-sm text-gray-600 mb-2">
-              Widget URL: {widgetUrl}
+              Widget URL: {widgetUrl} 
+              &nbsp;<a href={widgetUrl} target="_blank"><b>(Open)</b></a>
             </div>
             <div className="w-full">
               <iframe
