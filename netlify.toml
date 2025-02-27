@@ -5,4 +5,5 @@
 
 [build]
   publish = "dist"
+  command = "vite build"
   functions = "netlify/functions"
