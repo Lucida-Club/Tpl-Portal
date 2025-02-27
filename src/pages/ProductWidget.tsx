@@ -38,7 +38,8 @@ const ProductWidget = () => {
         .initIndex(import.meta.env.VITE_ALGOLIA_INDEX_NAME)
         .search('', {
           filters: `upc:${savedUpc}`,
-          hitsPerPage: 1
+          hitsPerPage: 1,
+          attributeForDistinct: 'upc'
         })
         .then((response) => {
           if (response.hits.length > 0) {
@@ -61,26 +62,13 @@ const ProductWidget = () => {
           if (state.collections && state.collections.length > 0 && state.collections[0].items.length > 0) {
             const items = state.collections[0].items as Product[];
             
-            // Create a map to track unique UPCs
-            const uniqueUpcMap = new Map<string, Product>();
-            
-            // Keep only the first occurrence of each UPC
-            items.forEach(item => {
-              if (item.upc && !uniqueUpcMap.has(item.upc)) {
-                uniqueUpcMap.set(item.upc, item);
-              }
-            });
-            
-            // Convert map values back to array
-            const uniqueItems = Array.from(uniqueUpcMap.values());
-            
             // Create a new state object with deduplicated items
             const newState = {
               ...state,
               collections: [
                 {
                   ...state.collections[0],
-                  items: uniqueItems
+                  items: items
                 },
                 ...state.collections.slice(1)
               ]
