@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "deploy:staging": "netlify deploy",
-    "deploy:production": "netlify deploy --prod",
+    "deploy:production": "netlify deploy --build --prod",
     "deploy:functions": "netlify deploy --prod --functions=netlify/functions"
   },
   "dependencies": {
