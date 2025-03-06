@@ -13,7 +13,7 @@ const API_KEY = process.env.ALGOLIA_ADMIN_API_KEY;
 
 // Initialize the Algolia client.
 const client = algoliasearch(APP_ID, API_KEY);
-const AlgoliaIndex = client.initIndex(process.env.ALGOLIA_INDEX_NAME);
+const AlgoliaIndex = client.initIndex(`${process.env.ALGOLIA_INDEX_NAME}-retailers`);
 
 module.exports.handler = async (event, context) => {
     try {
@@ -22,18 +22,18 @@ module.exports.handler = async (event, context) => {
 
         // Create a promise to handle the asynchronous page processing
         await new Promise((resolve, reject) => {
-            airTableBase(process.env.AIRTABLE_TABLE_NAME).select({
-                view: 'All Inventory',
+            airTableBase(process.env.AIRTABLE_RETAILER_TABLE_NAME).select({
+                view: 'All Retailers',
                 pageSize: 100
             }).eachPage((records, fetchNextPage) => {
                 records.forEach((record) => {
                     record.fields = _.mapKeys(record.fields, (v, k) => _.camelCase(k));
                     record.fields.objectID = record.id;
-
+            
                     if (record.fields.lat && record.fields.lng) {
                         record.fields._geoloc = {
-                            lat: record.fields.lat[0],
-                            lng: record.fields.lng[0]
+                            lat: record.fields.lat,
+                            lng: record.fields.lng
                         }
                     }
 
