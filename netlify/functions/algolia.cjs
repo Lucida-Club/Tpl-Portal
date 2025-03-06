@@ -28,7 +28,8 @@ module.exports.handler = async (event, context) => {
             }).eachPage((records, fetchNextPage) => {
                 records.forEach((record) => {
                     record.fields = _.mapKeys(record.fields, (v, k) => _.camelCase(k));
-                    record.fields.objectID = record.id;
+                    record.fields.objectID = `${record.fields.upc}-${record.fields.retailerId}`;
+                    record.airTableId= record.id;
 
                     if (record.fields.lat && record.fields.lng) {
                         record.fields._geoloc = {
@@ -78,5 +79,4 @@ module.exports.handler = async (event, context) => {
         };
     }
 };
-
-// module.exports.handler()
+   
