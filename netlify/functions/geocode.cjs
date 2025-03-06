@@ -64,7 +64,7 @@ async function updateAirtable() {
 
   return new Promise((resolve, reject) => {
     base(AIRTABLE_TABLE_NAME)
-      .select({ view: 'Grid view', pageSize: 100 })
+      .select({ view: 'All Retailers', pageSize: 100 })
       .eachPage(
         async (records, fetchNextPage) => {
           totalRecords += records.length;
