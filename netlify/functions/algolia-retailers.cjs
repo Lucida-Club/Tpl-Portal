@@ -29,7 +29,7 @@ module.exports.handler = async (event, context) => {
                 records.forEach((record) => {
                     record.fields = _.mapKeys(record.fields, (v, k) => _.camelCase(k));
                     record.fields.objectID = record.id;
-            
+
                     if (record.fields.lat && record.fields.lng) {
                         record.fields._geoloc = {
                             lat: record.fields.lat,
