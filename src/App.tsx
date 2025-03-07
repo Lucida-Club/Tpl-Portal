@@ -4,21 +4,37 @@ import Navbar from './components/Navbar';
 import ProductWidget from './pages/ProductWidget';
 import BrandWidget from './pages/BrandWidget';
 import MapWidget from './pages/MapWidget';
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './store/AuthContext';
+
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-100">
-        <Navbar />
-        <main>
-          <Routes>
-            <Route path="/" element={<Navigate to="/product-widget" replace />} />
-            <Route path="/product-widget" element={<ProductWidget />} />
-            <Route path="/brand-widget" element={<BrandWidget />} />
-            <Route path="/brand-map" element={<MapWidget />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/*"
+            element={
+              <ProtectedRoute>
+                <div className="min-h-screen bg-gray-100">
+                  <Navbar />
+                  <main>
+                    <Routes>
+                      <Route path="/" element={<Navigate to="/product-widget" replace />} />
+                      <Route path="/product-widget" element={<ProductWidget />} />
+                      <Route path="/brand-widget" element={<BrandWidget />} />
+                      <Route path="/brand-map" element={<MapWidget />} />
+                    </Routes>
+                  </main>
+                </div>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

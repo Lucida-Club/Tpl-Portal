@@ -1,9 +1,17 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Layout } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Layout, LogOut } from 'lucide-react';
+import { useAuth } from '../store/AuthContext';
 
 const Navbar = () => {
   const projectName = import.meta.env.VITE_PROJECT_NAME;
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <nav className="bg-gray-800 text-white p-4">
@@ -12,7 +20,7 @@ const Navbar = () => {
           <Layout className="h-6 w-6" />
           <span className="text-xl font-bold">{projectName}</span>
         </div>
-        <div className="space-x-6">
+        <div className="flex items-center space-x-6">
           <NavLink
             to="/product-widget"
             className={({ isActive }) =>
@@ -37,6 +45,13 @@ const Navbar = () => {
           >
             Map
           </NavLink>
+          <button
+            onClick={handleLogout}
+            className="flex items-center space-x-1 hover:text-gray-300"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Logout</span>
+          </button>
         </div>
       </div>
     </nav>
