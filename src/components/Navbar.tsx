@@ -45,6 +45,14 @@ const Navbar = () => {
           >
             Map
           </NavLink>
+          <NavLink
+            to="/systems"
+            className={({ isActive }) =>
+              `hover:text-gray-300 ${isActive ? 'text-blue-400' : ''}`
+            }
+          >
+            Systems
+          </NavLink>
           <button
             onClick={handleLogout}
             className="flex items-center space-x-1 hover:text-gray-300"

@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import ProductWidget from './pages/ProductWidget';
 import BrandWidget from './pages/BrandWidget';
 import MapWidget from './pages/MapWidget';
+import SystemsOptions from './pages/SystemsOptions';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './store/AuthContext';
@@ -26,6 +27,7 @@ function App() {
                       <Route path="/product-widget" element={<ProductWidget />} />
                       <Route path="/brand-widget" element={<BrandWidget />} />
                       <Route path="/brand-map" element={<MapWidget />} />
+                      <Route path="/systems" element={<SystemsOptions />} />
                     </Routes>
                   </main>
                 </div>

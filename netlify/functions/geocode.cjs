@@ -32,18 +32,33 @@ async function geocodeAddress(address) {
 }
 
 // Netlify function handler
-exports.handler = async function(event, context) {
+exports.handler = async function (event, context) {
   try {
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*', // Be more restrictive in production
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS'
+    };
+
+    // Handle OPTIONS request (preflight)
+    if (event.httpMethod === 'OPTIONS') {
+      return {
+        statusCode: 204,
+        headers: corsHeaders,
+        body: ''
+      };
+    }
+
     console.log('Starting geocoding process...');
 
     const { updatedCount, noAddressCount, totalRecords, alreadyGeocodedCount } = await updateAirtable(); // Ensure this is awaited
     return {
       statusCode: 200,
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         message: `Airtable update completed successfully.`,
-        updatedCount, 
-        noAddressCount, 
-        totalRecords, 
+        updatedCount,
+        noAddressCount,
+        totalRecords,
         alreadyGeocodedCount
       }),
     };

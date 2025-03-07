@@ -17,6 +17,21 @@ const AlgoliaIndex = client.initIndex(process.env.ALGOLIA_INDEX_NAME);
 
 module.exports.handler = async (event, context) => {
     try {
+        const corsHeaders = {
+            'Access-Control-Allow-Origin': '*', // Be more restrictive in production
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS'
+        };
+    
+        // Handle OPTIONS request (preflight)
+        if (event.httpMethod === 'OPTIONS') {
+            return {
+                statusCode: 204,
+                headers: corsHeaders,
+                body: ''
+            };
+        }
+        
         const data = [];
         let totalRecordsIndexed = 0;
 
