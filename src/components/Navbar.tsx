@@ -29,6 +29,14 @@ const Navbar = () => {
           >
             Brand Widget
           </NavLink>
+          <NavLink
+            to="/brand-map"
+            className={({ isActive }) =>
+              `hover:text-gray-300 ${isActive ? 'text-blue-400' : ''}`
+            }
+          >
+            Map
+          </NavLink>
         </div>
       </div>
     </nav>

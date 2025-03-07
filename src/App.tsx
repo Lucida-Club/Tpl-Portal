@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Navbar from './components/Navbar';
 import ProductWidget from './pages/ProductWidget';
 import BrandWidget from './pages/BrandWidget';
-
+import MapWidget from './pages/MapWidget';
 function App() {
   return (
     <Router>
@@ -14,6 +14,7 @@ function App() {
             <Route path="/" element={<Navigate to="/product-widget" replace />} />
             <Route path="/product-widget" element={<ProductWidget />} />
             <Route path="/brand-widget" element={<BrandWidget />} />
+            <Route path="/brand-map" element={<MapWidget />} />
           </Routes>
         </main>
       </div>
