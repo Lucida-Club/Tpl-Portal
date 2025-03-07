@@ -3,12 +3,15 @@ const algoliasearch = require('algoliasearch');
 
 dotenv.config();
 
-const APP_ID = process.env.VITE_ALGOLIA_APP_ID;
-const API_KEY = process.env.VITE_ALGOLIA_API_KEY;
+const APP_ID = process.env.ALGOLIA_APP_ID || process.env.VITE_ALGOLIA_APP_ID;
+const API_KEY = process.env.ALGOLIA_API_KEY || process.env.VITE_ALGOLIA_API_KEY;
+const INDEX_NAME = process.env.ALGOLIA_INDEX_NAME || process.env.VITE_ALGOLIA_INDEX_NAME;
+
+console.log('Config', APP_ID, API_KEY, INDEX_NAME);
 
 // Initialize the Algolia client
 const client = algoliasearch(APP_ID, API_KEY);
-const AlgoliaIndex = client.initIndex(`${process.env.VITE_ALGOLIA_INDEX_NAME}-retailers`);
+const AlgoliaIndex = client.initIndex(`${INDEX_NAME}-retailers`);
 
 module.exports.handler = async (event, context) => {
     // Add CORS headers
@@ -37,7 +40,7 @@ module.exports.handler = async (event, context) => {
         const features = hits
             .filter(hit => hit._geoloc) // Only include records with location data
             .map(hit => {
-                const { coastInventoryFeed, _highlightResult, _geoloc, ...filteredHit } = hit;
+                const { coastInventoryFeed, _highlightResult, inventoryFeed2, _geoloc, ...filteredHit } = hit;
                 return {
                     type: 'Feature',
                     geometry: {
