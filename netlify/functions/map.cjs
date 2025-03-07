@@ -40,7 +40,7 @@ module.exports.handler = async (event, context) => {
         const features = hits
             .filter(hit => hit._geoloc) // Only include records with location data
             .map(hit => {
-                const { coastInventoryFeed, _highlightResult, inventoryFeed2, _geoloc, ...filteredHit } = hit;
+                const { coastInventoryFeed, _highlightResult, inventoryFeed2, inventory, _geoloc, ...filteredHit } = hit;
                 return {
                     type: 'Feature',
                     geometry: {
