@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../store/AuthContext';
 import { Store } from 'lucide-react';
 
 const Login = () => {
+  const { login, username: storedUsername } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const brandName = import.meta.env.VITE_BRAND_NAME;
+
+  // Load the stored username when component mounts
+  useEffect(() => {
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, [storedUsername]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
