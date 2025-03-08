@@ -120,12 +120,23 @@ const ProductWidget = () => {
     setInputValue(value);
     
     if (selectedProduct && value !== (selectedProduct.productName || selectedProduct.name)) {
-      // Clear selected product if user changes the input
       setSelectedProduct(null);
     }
     
     autocomplete.setQuery(value);
+    if (value.trim()) {
+      autocomplete.setIsOpen(true);
+    }
     autocomplete.refresh();
+  };
+
+  const handleInputFocus = () => {
+    if (inputValue.trim()) {
+      // Trigger a search when focusing if there's a value
+      autocomplete.setQuery(inputValue);
+      autocomplete.setIsOpen(true);
+      autocomplete.refresh();
+    }
   };
 
   const handleProductSelect = (item: Product) => {
@@ -199,11 +210,7 @@ const ProductWidget = () => {
                     ref={inputRef}
                     value={inputValue}
                     onChange={handleInputChange}
-                    onFocus={() => {
-                      if (inputValue.trim()) {
-                        autocomplete.setIsOpen(true);
-                      }
-                    }}
+                    onFocus={handleInputFocus}
                     placeholder="Search for a product..."
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
